@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ title }}</title>
+    <meta name="google-signin-scope" content="profile email">
+    <meta name="google-signing-client_id" content="{{ client_id }}">
+    <script src="https://apis.google.com/js/platform.js" defer async></script>
+    <script>
+        function onSignIn(googleUser) {
+            var profile = googleUser.getBasicProfile();
+            console.log(profile);
+
+            var id_token = googleUser.getAuthResponse().id_token;
+            console.log(id_token);
+        }
+    </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            width: 100%;
+            background-color: white;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        main {
+            max-width: 720px;
+            padding: 15px 30px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <h1>{{ title }}</h1>
+        <div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
+    </main>
+</body>
+</html>

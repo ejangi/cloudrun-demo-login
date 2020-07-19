@@ -1,5 +1,5 @@
-# Cloud Run Demo App
+# Cloud Run Demo Login
 
-> A super simple "Hello World" Flask API for demoing Cloud Run features.
+> A simple Flask app for demoing Cloud Run login with Google.
 
 [![Run on Google Cloud](https://deploy.cloud.run/button.svg)](https://deploy.cloud.run)

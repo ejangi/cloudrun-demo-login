@@ -3,6 +3,9 @@ FROM python:3.7-slim
 # Copy local code to the container image.
 ENV APP_HOME /app
 WORKDIR $APP_HOME
+
+ENV CLIENT_ID ""
+
 COPY src/ ./
 
 # Install production dependencies.
