@@ -6,12 +6,39 @@
     <meta name="google-signin-client_id" content="{{ client_id }}">
     <script src="https://apis.google.com/js/platform.js" defer async></script>
     <script>
-        function onSignIn(googleUser) {
-            var profile = googleUser.getBasicProfile();
-            console.log(profile.getEmail());
+        let userJwtToken;
 
-            var id_token = googleUser.getAuthResponse().id_token;
-            console.log("ID Token: " + id_token);
+        function onSignIn(googleUser) {
+            userJwtToken = googleUser.getAuthResponse().id_token;
+            document.getElementById('logout').removeAttribute('hidden');
+            
+            if (userJwtToken) {
+                getHelloWorld();
+            }
+        }
+
+        function logOut() {
+            gapi.auth2.getAuthInstance().signOut();
+            userJwtToken = null;
+            document.getElementById('results-content').innerHTML;
+            document.getElementById('results').setAttribute('hidden', true);
+            document.getElementById('logout').setAttribute('hidden', true);
+        }
+
+        async function getHelloWorld() {
+            document.getElementById('results').removeAttribute('hidden');
+
+            const response = await fetch(`/api/hello`, {
+                method: 'GET',
+                headers: { 'Authorization': 'Bearer ' + userJwtToken }
+            });
+
+            if (response.ok) {
+                const respObj = await response.json();
+                document.getElementById('results-content').innerHTML = respObj.message;
+            } else {
+                console.error('Call to /api/hello failed.');
+            }
         }
     </script>
     <style>
@@ -38,12 +65,64 @@
         h1 {
             margin-bottom: 1.2rem;
         }
+
+        .buttons {
+            display: flex;
+        }
+
+        .g-signin2 {
+            display: inline-block;
+            margin-right: 15px;
+        }
+
+        #logout {
+            display: inline-block;
+            font-size: 12px;
+            font-weight: bold;
+            background-color: #4285f4;
+            border: 0;
+            color: white;
+            padding: 8px 15px;
+            box-shadow: 0 2px 4px 0 rgba(0,0,0,.25);
+            cursor: pointer;
+            transition: background-color .218s,border-color .218s,box-shadow .218s;
+        }
+
+        #logout:hover {
+            box-shadow: 0 0 3px 3px rgba(66,133,244,.3);
+        }
+
+        #logout[hidden] {
+            display: none;
+        }
+
+        #results {
+            margin-top: 1.2rem;
+        }
+
+        #results-content {
+            padding: 5px;
+            background-color: #EEE;
+            border: 1px dashed #DDD;
+        }
+
+        #results h2 {
+            font-size: 14pt;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
     <main>
         <h1>{{ title }}</h1>
-        <div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
+        <div class="buttons">
+            <div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
+            <button id="logout" onclick="logOut();" hidden>Logout</button>
+        </div>
+        <div id="results" hidden>
+            <h2>Results:</h2>
+            <div id="results-content"></div>
+        </div>
     </main>
 </body>
 </html>
